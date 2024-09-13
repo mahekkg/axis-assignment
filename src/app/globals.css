@@ -2,3 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ================ SCROLL BAR STYLES ================  */
+/* Works on Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #fffafa #b93267;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #fffafa;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #b93267;
+  border-radius: 20px;
+  border: 6px solid #b93267;
+}
