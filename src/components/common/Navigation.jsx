@@ -8,13 +8,13 @@ import {
   Target,
   Network,
   Layers,
-  BarChart2,
-  FileCode,
+  CircleChevronRight,
+  ChevronDown,
+  ChevronRight,
   Users,
   Clock,
   Briefcase,
   HeadphonesIcon,
-  CircleChevronRight,
 } from "lucide-react";
 import Image from "next/image";
 import logo from "../../asesst/logo.png";
@@ -89,10 +89,12 @@ const menuItems = [
     ],
   },
 ];
+
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
+  const [subMenuOpen, setSubMenuOpen] = useState({}); // For controlling submenu visibility on smaller screens
 
   const headerMenuItems = [
     { icon: Clock, label: "TMS", href: "/tms" },
@@ -125,7 +127,7 @@ export default function Layout({ children }) {
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden text-[#00001d] hover:text-gray-800"
           >
-            <X size={24} />
+            <X size={24} className="text-[#FFF5EE]" />
           </button>
         </div>
         <nav className="mt-2">
@@ -138,15 +140,29 @@ export default function Layout({ children }) {
                 onMouseLeave={() => setHoveredItem(null)}
               >
                 <div
-                  className="flex items-center px-6 py-3 mb-2 text-[#FFFAFA] hover:bg-[#b93267] hover:text-[#FFFAFA] transition-all duration-200 rounded-lg"
-                  onClick={() => setSidebarOpen(false)}
+                  className="flex items-center justify-between px-6 py-3 mb-2 text-[#FFFAFA] hover:bg-[#b93267] hover:text-[#FFFAFA] transition-all duration-200 rounded-lg"
+                  onClick={() =>
+                    window.innerWidth < 1024
+                      ? setSubMenuOpen((prev) => ({
+                          ...prev,
+                          [index]: !prev[index],
+                        }))
+                      : setSidebarOpen(false)
+                  }
                 >
                   <item.icon size={20} className="mr-3" />
                   {item.label}
+                  {item.subItems && (
+                    <span className="ml-auto">
+                      {subMenuOpen[index] ? <ChevronDown /> : <ChevronRight />}
+                    </span>
+                  )}
                 </div>
-                {hoveredItem === index && item.subItems && (
-                  <div className="absolute left-full top-0 ml-2 w-48 bg-[#97144d] rounded-lg shadow-lg z-50">
-                    <div className="max-h-[22rem] overflow-y-auto rounded-xl">
+                {/* Submenu for smaller screens */}
+                {((window.innerWidth < 1024 && subMenuOpen[index]) ||
+                  (hoveredItem === index && window.innerWidth >= 1024)) &&
+                  item.subItems && (
+                    <div className="lg:absolute lg:left-full lg:top-0 lg:ml-2 w-full lg:w-48 bg-[#97144d] rounded-lg shadow-lg z-50 lg:max-h-[22rem] lg:overflow-y-auto">
                       {item.subItems.map((subItem, subIndex) => (
                         <Link
                           key={subIndex}
@@ -157,8 +173,7 @@ export default function Layout({ children }) {
                         </Link>
                       ))}
                     </div>
-                  </div>
-                )}
+                  )}
               </li>
             ))}
           </ul>
@@ -174,7 +189,7 @@ export default function Layout({ children }) {
               onClick={() => setSidebarOpen(true)}
               className="text-[#00001d] hover:text-[#00001d] lg:hidden"
             >
-              <CircleChevronRight size={24} />
+              <CircleChevronRight size={24} className="text-[#97144d]" />
             </button>
             <Image
               src={apiLogo}
@@ -188,19 +203,18 @@ export default function Layout({ children }) {
                 onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
                 className="p-1 text-[#00001d] bg-gray-50 rounded-full hover:text-gray-800"
               >
-                <Menu />
+                <Menu className="text-[#97144d]" />
               </button>
               {headerMenuOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-[#FFFAFA] rounded-lg shadow-lg border border-[#97144d] z-50">
-                  {headerMenuItems.map((item, index) => (
+                  {headerMenuItems.map((headerItem, headerIndex) => (
                     <Link
-                      key={index}
-                      href={item.href}
-                      className="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-[#FFF5EE] hover:text-gray-900 transition-all duration-200 rounded-lg"
-                      onClick={() => setHeaderMenuOpen(false)}
+                      key={headerIndex}
+                      href={headerItem.href}
+                      className="block px-4 py-2 text-gray-800 hover:bg-[#f7f7f7] transition-all duration-200 rounded-t"
                     >
-                      <item.icon size={18} className="mr-3 text-green-500" />
-                      {item.label}
+                      <headerItem.icon className="inline-block mr-2" />
+                      {headerItem.label}
                     </Link>
                   ))}
                 </div>
@@ -210,9 +224,7 @@ export default function Layout({ children }) {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#FFFFF0s] ">
-          <div className="container mx-auto px-6">{children}</div>
-        </main>
+        <main className="flex-1 p-6 overflow-y-auto">{children}</main>
       </div>
     </div>
   );
