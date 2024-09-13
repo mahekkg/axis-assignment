@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Menu,
@@ -94,13 +94,26 @@ export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
-  const [subMenuOpen, setSubMenuOpen] = useState({}); // For controlling submenu visibility on smaller screens
+  const [subMenuOpen, setSubMenuOpen] = useState({});
+  const [windowWidth, setWindowWidth] = useState(0);
 
   const headerMenuItems = [
     { icon: Clock, label: "TMS", href: "/tms" },
     { icon: Briefcase, label: "AMS", href: "/ams" },
     { icon: HeadphonesIcon, label: "CCS", href: "/ccs" },
   ];
+
+  useEffect(() => {
+    // Set initial window width
+    setWindowWidth(window.innerWidth);
+
+    // Update window width on resize
+    const handleResize = () => setWindowWidth(window.innerWidth);
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className="flex h-screen bg-[#FFFAFA] text-gray-800">
