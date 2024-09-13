@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { Star } from "lucide-react";
 
-export function ProductCard({
-  icon,
-  title,
-  rating,
-  votes,
-  description,
-  content,
-}) {
+const ProductCard = ({ icon, title, rating, votes, description, content }) => {
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
 
   const stars = Array.from({ length: 5 }, (_, i) => (
@@ -48,7 +41,7 @@ export function ProductCard({
           </div>
         )}
         <button
-          className="bg-pink-600 text-white py-2 px-4 rounded-md hover:bg-pink-700 transition-colors"
+          className="bg-[#97144d] text-white py-2 px-4 rounded-md hover:bg-[#b93267] transition-colors"
           onMouseEnter={() => setIsPreviewVisible(true)}
           onMouseLeave={() => setIsPreviewVisible(false)}
         >
@@ -57,4 +50,6 @@ export function ProductCard({
       </div>
     </div>
   );
-}
+};
+
+export default ProductCard;
